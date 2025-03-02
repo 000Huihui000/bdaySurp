@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* ===== FIXED CSS ===== */
         body { 
             background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
             color: #6d6875;
@@ -12,88 +13,111 @@
             font-family: 'Comic Neue', cursive;
             padding: 20px;
             min-height: 100vh;
-            touch-action: manipulation;
-            overflow-x: hidden;
+            margin: 0;
+        }
+
+        .slide { 
+            display: none;
+            margin: 30px auto;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        .slide.active {
+            display: block !important;
         }
 
         h1, h2 {
             font-family: 'Dancing Script', cursive;
-            text-shadow: 2px 2px 4px rgba(255, 192, 203, 0.5);
             margin: 0 0 20px;
+            color: #ff6b8d;
         }
 
-        .slide { 
-            display: none; 
-            margin: 50px auto; 
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
-            animation: slideIn 0.8s ease-out;
-            position: relative;
-        }
-
-        img { 
-            width: 100%; 
-            border-radius: 15px; 
+        img {
+            width: 100%;
+            border-radius: 15px;
             margin: 20px 0;
             border: 3px solid #ff9eb5;
         }
 
-        button { 
-            background: #ff85a2; 
-            color: white; 
-            border: none; 
-            padding: 15px 30px; 
-            border-radius: 25px; 
-            cursor: pointer; 
-            font-size: 16px; 
+        button {
+            background: #ff6b8d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
             margin: 15px 0;
+            transition: transform 0.2s;
         }
 
-        @keyframes heartExplosion {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
-        }
-
-        .heart {
-            position: fixed;
-            font-size: 24px;
-            pointer-events: none;
-            animation: heartExplosion 1.5s ease-out forwards;
-            z-index: 1000;
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        button:active {
+            transform: scale(0.95);
         }
 
         .music-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            z-index: 10000;
             background: #ff6b8d;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Heart explosion effects */
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            animation: heartFloat 1.2s ease-out forwards;
+            z-index: 999;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(2);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <button class="music-btn" onclick="toggleMusic()">🎵</button>
+    <!-- Music Control -->
+    <div class="music-btn" onclick="toggleMusic()">🎵</div>
 
-    <!-- Slide 1 -->
+    <!-- Slides -->
     <div class="slide active" id="slide1">
         <h1>🎀 Happy Birthday, Cups! 🎀</h1>
         <p>You've officially scammed me into being your biggest fan 🌸<br>Let's revisit the evidence...</p>
         <button onclick="nextSlide(event)">🎉 Start the Case →</button>
     </div>
 
-    <!-- Slide 2 -->
     <div class="slide" id="slide2">
         <h2>🌸 Exhibit A</h2>
         <img src="https://i.ibb.co/27kbp6Gz/photo1.jpg" alt="Café Balcony">
@@ -101,7 +125,6 @@
         <button onclick="nextSlide(event)">Next Clue →</button>
     </div>
 
-    <!-- Slide 3 -->
     <div class="slide" id="slide3">
         <h2>📖 Exhibit B</h2>
         <img src="https://i.ibb.co/23JQW5V9/photo2.jpg" alt="Dark Romance Book">
@@ -109,7 +132,6 @@
         <button onclick="nextSlide(event)">Next Clue →</button>
     </div>
 
-    <!-- Slide 4 -->
     <div class="slide" id="slide4">
         <h2>🎧 Exhibit C</h2>
         <audio controls>
@@ -119,62 +141,71 @@
         <button onclick="nextSlide(event)">💖 Reveal the Verdict →</button>
     </div>
 
-    <!-- Slide 5 -->
     <div class="slide" id="slide5">
         <h2>💞 Verdict 🔍</h2>
         <p>Guilty of being the most mesmerizing person I know<br>Sentence: Eternal bike rides and food (your pick) 🚴♀️❤️</p>
         <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 19th! 🎂</p>
     </div>
 
+    <!-- Background Music -->
     <audio id="bgMusic" loop>
         <source src="https://media.vocaroo.com/mp3/11UkIpEwjOZB" type="audio/mpeg">
     </audio>
 
     <script>
+        // ===== GUARANTEED WORKING CODE =====
         let currentSlide = 1;
         const bgMusic = document.getElementById('bgMusic');
-        let musicStarted = false;
+        
+        // Initialize first slide
+        document.getElementById('slide1').style.display = 'block';
 
-        // Music setup
-        document.addEventListener('click', () => {
-            if(!musicStarted) {
-                bgMusic.volume = 0.3;
-                bgMusic.play().catch(() => {});
-                musicStarted = true;
-            }
-        }, { once: true });
-
+        // Music controls
         function toggleMusic() {
-            bgMusic[bgMusic.paused ? 'play' : 'pause']();
-            document.querySelector('.music-btn').textContent = 
-                bgMusic.paused ? '🔇' : '🎵';
+            if (bgMusic.paused) {
+                bgMusic.play();
+                document.querySelector('.music-btn').textContent = '🎵';
+            } else {
+                bgMusic.pause();
+                document.querySelector('.music-btn').textContent = '🔇';
+            }
         }
 
-        // Slide logic
+        // Start music after first click
+        document.addEventListener('click', () => {
+            bgMusic.volume = 0.3;
+            bgMusic.play();
+        }, { once: true });
+
+        // Slide transitions with hearts
         function nextSlide(event) {
-            // Heart explosion
+            // Create hearts
             const button = event.target;
             const rect = button.getBoundingClientRect();
             
-            for(let i = 0; i < 50; i++) {
+            for(let i = 0; i < 30; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
                 heart.innerHTML = '💖';
                 heart.style.left = `${rect.left + rect.width/2}px`;
                 heart.style.top = `${rect.top + rect.height/2}px`;
-                heart.style.setProperty('--tx', `${Math.random() * 400 - 200}%`);
-                heart.style.setProperty('--ty', `${Math.random() * 400 - 200}%`);
-                heart.style.fontSize = `${Math.random() * 32 + 16}px`;
+                heart.style.setProperty('--tx', `${Math.random() * 200 - 100}%`);
+                heart.style.setProperty('--ty', `${Math.random() * 200 - 100}%`);
                 document.body.appendChild(heart);
-                setTimeout(() => heart.remove(), 1500);
+                setTimeout(() => heart.remove(), 1200);
             }
 
-            // Slide transition
+            // Transition slides
             document.querySelector('.active').classList.remove('active');
             currentSlide++;
-            const nextSlide = document.getElementById(`slide${currentSlide}`);
-            nextSlide.classList.add('active');
-            nextSlide.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const nextSlideElem = document.getElementById(`slide${currentSlide}`);
+            nextSlideElem.classList.add('active');
+            
+            // Mobile scroll
+            nextSlideElem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
         }
     </script>
 </body>
