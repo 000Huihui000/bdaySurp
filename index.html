@@ -29,10 +29,36 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
-            animation: slideIn 0.8s ease-out;
             position: relative;
             z-index: 1;
+            animation: slideIn 0.8s ease-out;
+            /* Cloud shape */
+            border-radius: 50px;
+            box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
+        }
+
+        .slide::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            width: 40px;
+            height: 40px;
+            bottom: -20px;
+            left: 20%;
+            border-radius: 50%;
+            z-index: -1;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            right: 10%;
+            border-radius: 50%;
+            z-index: -1;
         }
 
         img { 
@@ -64,42 +90,32 @@
         .active { display: block; }
 
         /* Explosion Animations */
-        @keyframes buttonExplode {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(20); opacity: 0; }
-        }
-
-        @keyframes bubbleFloat {
+        @keyframes heartExplosion {
             0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(2); opacity: 0; }
         }
 
-        .exploding-button {
+        .heart {
             position: fixed;
-            animation: buttonExplode 0.8s ease-out forwards;
+            font-size: 24px;
+            pointer-events: none;
+            animation: heartExplosion 1.2s ease-out forwards;
             z-index: 1000;
-            pointer-events: none;
-            border-radius: 50%;
-            background: #ff6b8d;
         }
 
-        .bubble {
-            position: fixed;
-            background: #ff9eb5;
-            border-radius: 50%;
-            pointer-events: none;
-            animation: bubbleFloat 1s ease-out forwards;
-        }
-
-        /* Slide animation */
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        @keyframes buttonPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(0); }
+        }
     </style>
 </head>
 <body>
-    <!-- Existing Content -->
     <div class="slide active" id="slide1">
         <h1>🎀 Happy Birthday, Cups! 🎀</h1>
         <p>You've officially scammed me into being your biggest fan 🌸<br>Let's revisit the evidence...</p>
@@ -132,7 +148,7 @@
     <div class="slide" id="slide5">
         <h2>💞 Verdict 🔍</h2>
         <p>Guilty of being the most mesmerizing person I know<br>Sentence: Eternal bike rides and food (your pick) 🚴♀️❤️</p>
-        <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 20th! 🎂</p>
+        <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 19th! 🎂</p>
     </div>
 
     <script>
@@ -140,32 +156,26 @@
 
         async function nextSlide(event) {
             const button = event.target;
-            
-            // Create exploding button effect
-            const explodeClone = button.cloneNode(true);
-            explodeClone.classList.add('exploding-button');
             const rect = button.getBoundingClientRect();
-            explodeClone.style.left = `${rect.left}px`;
-            explodeClone.style.top = `${rect.top}px`;
-            explodeClone.style.width = `${rect.width}px`;
-            explodeClone.style.height = `${rect.height}px`;
-            document.body.appendChild(explodeClone);
-
-            // Create bubble particles
-            for(let i = 0; i < 20; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                bubble.style.left = `${rect.left + rect.width/2}px`;
-                bubble.style.top = `${rect.top + rect.height/2}px`;
-                bubble.style.width = `${Math.random() * 20 + 10}px`;
-                bubble.style.height = bubble.style.width;
-                bubble.style.setProperty('--tx', `${Math.random() * 200 - 100}%`);
-                bubble.style.setProperty('--ty', `${Math.random() * 200 - 100}%`);
-                document.body.appendChild(bubble);
-                setTimeout(() => bubble.remove(), 1000);
+            
+            // Create heart explosion
+            for(let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = ['💖', '💗', '💓', '💝'][Math.floor(Math.random() * 4)];
+                heart.style.left = `${rect.left + rect.width/2}px`;
+                heart.style.top = `${rect.top + rect.height/2}px`;
+                heart.style.setProperty('--tx', `${Math.random() * 400 - 200}%`);
+                heart.style.setProperty('--ty', `${Math.random() * 400 - 200}%`);
+                heart.style.fontSize = `${Math.random() * 32 + 16}px`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
             }
 
-            // Wait for explosion animation
+            // Button pop animation
+            button.style.animation = 'buttonPop 0.6s ease-out forwards';
+            
+            // Wait for animation
             await new Promise(r => setTimeout(r, 500));
 
             // Switch slides
@@ -173,18 +183,15 @@
             currentSlide++;
             const nextSlideElem = document.getElementById(`slide${currentSlide}`);
             nextSlideElem.classList.add('active');
-            nextSlideElem.style.animation = 'none';
-            void nextSlideElem.offsetHeight; // Trigger reflow
-            nextSlideElem.style.animation = 'slideIn 0.8s ease-out';
-
+            
+            // Reset button animation for next use
+            button.style.animation = '';
+            
             // Auto-scroll for mobile
             nextSlideElem.scrollIntoView({ 
                 behavior: 'smooth', 
                 block: 'center' 
             });
-
-            // Cleanup exploded button
-            setTimeout(() => explodeClone.remove(), 800);
         }
     </script>
 </body>
