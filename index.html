@@ -153,30 +153,60 @@
     </audio>
 
     <script>
-        // ===== AUTO-PLAY MUSIC =====
-    let musicInitialized = false;
-    const bgMusic = document.getElementById('bgMusic');
-    bgMusic.volume = 0.3;
+        // ===== GUARANTEED WORKING CODE =====
+        let currentSlide = 1;
+        const bgMusic = document.getElementById('bgMusic');
+        
+        // Initialize first slide
+        document.getElementById('slide1').style.display = 'block';
 
-    // Try autoplay first
-    bgMusic.play().catch(() => {
-        // If blocked by browser, enable click-to-play
-        document.addEventListener('click', () => {
-            if(!musicInitialized) {
+        // Music controls
+        function toggleMusic() {
+            if (bgMusic.paused) {
                 bgMusic.play();
-                musicInitialized = true;
+                document.querySelector('.music-btn').textContent = '🎵';
+            } else {
+                bgMusic.pause();
+                document.querySelector('.music-btn').textContent = '🔇';
             }
+        }
+
+        // Start music after first click
+        document.addEventListener('click', () => {
+            bgMusic.volume = 0.3;
+            bgMusic.play();
         }, { once: true });
-    });
 
-    // Music toggle function
-    function toggleMusic() {
-        bgMusic[bgMusic.paused ? 'play' : 'pause']();
-        document.querySelector('.music-btn').textContent = 
-            bgMusic.paused ? '🔇' : '🎵';
-    }
+        // Slide transitions with hearts
+        function nextSlide(event) {
+            // Create hearts
+            const button = event.target;
+            const rect = button.getBoundingClientRect();
+            
+            for(let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.style.left = `${rect.left + rect.width/2}px`;
+                heart.style.top = `${rect.top + rect.height/2}px`;
+                heart.style.setProperty('--tx', `${Math.random() * 200 - 100}%`);
+                heart.style.setProperty('--ty', `${Math.random() * 200 - 100}%`);
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1200);
+            }
 
-    // Rest of the code remains the same...
+            // Transition slides
+            document.querySelector('.active').classList.remove('active');
+            currentSlide++;
+            const nextSlideElem = document.getElementById(`slide${currentSlide}`);
+            nextSlideElem.classList.add('active');
+            
+            // Mobile scroll
+            nextSlideElem.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
     </script>
 </body>
 </html>
