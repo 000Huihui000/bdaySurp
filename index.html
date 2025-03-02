@@ -1,58 +1,148 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Keep ALL existing CSS styles unchanged -->
+    <title>Happy Birthday, Cups 🎀</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* All previous CSS remains here */
+        body { 
+            background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
+            color: #6d6875;
+            text-align: center; 
+            font-family: 'Comic Neue', cursive;
+            padding: 20px;
+            min-height: 100vh;
+            touch-action: manipulation;
+            overflow-x: hidden;
+        }
+
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            text-shadow: 2px 2px 4px rgba(255, 192, 203, 0.5);
+            margin: 0 0 20px;
+        }
+
+        .slide { 
+            display: none; 
+            margin: 50px auto; 
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
+            animation: slideIn 0.8s ease-out;
+            position: relative;
+        }
+
+        img { 
+            width: 100%; 
+            border-radius: 15px; 
+            margin: 20px 0;
+            border: 3px solid #ff9eb5;
+        }
+
+        button { 
+            background: #ff85a2; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin: 15px 0;
+        }
+
+        @keyframes heartExplosion {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+        }
+
+        .heart {
+            position: fixed;
+            font-size: 24px;
+            pointer-events: none;
+            animation: heartExplosion 1.5s ease-out forwards;
+            z-index: 1000;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            background: #ff6b8d;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
-    <!-- Music Control -->
     <button class="music-btn" onclick="toggleMusic()">🎵</button>
 
-    <!-- Slides (now with proper structure) -->
+    <!-- Slide 1 -->
     <div class="slide active" id="slide1">
-        <!-- Slide 1 content -->
+        <h1>🎀 Happy Birthday, Cups! 🎀</h1>
+        <p>You've officially scammed me into being your biggest fan 🌸<br>Let's revisit the evidence...</p>
+        <button onclick="nextSlide(event)">🎉 Start the Case →</button>
     </div>
 
+    <!-- Slide 2 -->
     <div class="slide" id="slide2">
-        <!-- Slide 2 content -->
+        <h2>🌸 Exhibit A</h2>
+        <img src="https://i.ibb.co/27kbp6Gz/photo1.jpg" alt="Café Balcony">
+        <p>Where sunlight turned you into a Renaissance painting...<br>and you hid behind your hands 🌟</p>
+        <button onclick="nextSlide(event)">Next Clue →</button>
     </div>
 
+    <!-- Slide 3 -->
     <div class="slide" id="slide3">
-        <!-- Slide 3 content -->
+        <h2>📖 Exhibit B</h2>
+        <img src="https://i.ibb.co/23JQW5V9/photo2.jpg" alt="Dark Romance Book">
+        <p>The moment you handed me your favorite book<br>like a coded message 🔍 (Still decoding it!)</p>
+        <button onclick="nextSlide(event)">Next Clue →</button>
     </div>
 
+    <!-- Slide 4 -->
     <div class="slide" id="slide4">
-        <!-- Slide 4 content -->
+        <h2>🎧 Exhibit C</h2>
+        <audio controls>
+            <source src="https://media.vocaroo.com/mp3/150YlX7HGHzf" type="audio/mpeg">
+        </audio>
+        <p>Proof you're secretly a rom-com villain 😈<br>And I'm here for it!</p>
+        <button onclick="nextSlide(event)">💖 Reveal the Verdict →</button>
     </div>
 
+    <!-- Slide 5 -->
     <div class="slide" id="slide5">
-        <!-- Slide 5 content -->
+        <h2>💞 Verdict 🔍</h2>
+        <p>Guilty of being the most mesmerizing person I know<br>Sentence: Eternal bike rides and food (your pick) 🚴♀️❤️</p>
+        <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 19th! 🎂</p>
     </div>
 
-    <!-- Background Music -->
     <audio id="bgMusic" loop>
         <source src="https://media.vocaroo.com/mp3/11UkIpEwjOZB" type="audio/mpeg">
     </audio>
 
     <script>
-        // ===== FIXED CORE FUNCTIONALITY =====
-        let currentSlide = 1; // MUST be declared FIRST
-
-        // ===== MUSIC SETUP =====
+        let currentSlide = 1;
         const bgMusic = document.getElementById('bgMusic');
         let musicStarted = false;
 
-        document.addEventListener('click', initMusic, { once: true });
-
-        function initMusic() {
-            if (!musicStarted) {
+        // Music setup
+        document.addEventListener('click', () => {
+            if(!musicStarted) {
                 bgMusic.volume = 0.3;
                 bgMusic.play().catch(() => {});
                 musicStarted = true;
             }
-        }
+        }, { once: true });
 
         function toggleMusic() {
             bgMusic[bgMusic.paused ? 'play' : 'pause']();
@@ -60,13 +150,12 @@
                 bgMusic.paused ? '🔇' : '🎵';
         }
 
-        // ===== PROPER SLIDE TRANSITIONS =====
+        // Slide logic
         function nextSlide(event) {
-            // Heart explosion animation
+            // Heart explosion
             const button = event.target;
             const rect = button.getBoundingClientRect();
             
-            // Create 50 hearts
             for(let i = 0; i < 50; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -80,19 +169,12 @@
                 setTimeout(() => heart.remove(), 1500);
             }
 
-            // Proper slide transition
-            const currentActive = document.querySelector('.active');
-            currentActive.classList.remove('active');
-            
+            // Slide transition
+            document.querySelector('.active').classList.remove('active');
             currentSlide++;
-            const nextSlideElem = document.getElementById(`slide${currentSlide}`);
-            nextSlideElem.classList.add('active');
-            
-            // Mobile-friendly scroll
-            nextSlideElem.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
+            const nextSlide = document.getElementById(`slide${currentSlide}`);
+            nextSlide.classList.add('active');
+            nextSlide.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
 </body>
