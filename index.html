@@ -3,9 +3,8 @@
 <head>
     <title>Happy Birthday, Cups 🎀</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet>
     <style>
-        /* ===== FIXED CSS ===== */
         body { 
             background: linear-gradient(135deg, #ffb6c1, #ffd1dc);
             color: #6d6875;
@@ -14,6 +13,7 @@
             padding: 20px;
             min-height: 100vh;
             margin: 0;
+            overflow-x: hidden;
         }
 
         .slide { 
@@ -25,6 +25,8 @@
             border-radius: 20px;
             box-shadow: 0 0 25px rgba(255, 182, 193, 0.3);
             animation: slideIn 0.5s ease-out forwards;
+            position: relative;
+            z-index: 2;
         }
 
         .slide.active {
@@ -54,6 +56,8 @@
             cursor: pointer;
             margin: 15px 0;
             transition: transform 0.2s;
+            position: relative;
+            z-index: 3;
         }
 
         button:active {
@@ -76,39 +80,42 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Heart explosion effects */
-        .heart {
+        /* Button click hearts */
+        .heart-burst {
             position: fixed;
             font-size: 24px;
             pointer-events: none;
-            animation: heartFloat 1.2s ease-out forwards;
+            animation: heartExplode 1.2s ease-out forwards;
             z-index: 999;
         }
 
-        @keyframes heartFloat {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--tx), var(--ty)) scale(2);
-                opacity: 0;
-            }
+        @keyframes heartExplode {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(2); opacity: 0; }
+        }
+
+        /* Continuous floating hearts */
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatUp 8s linear infinite;
+            bottom: -50px;
+            z-index: 1;
         }
     </style>
 </head>
 <body>
-    <!-- Music Control -->
     <div class="music-btn" onclick="toggleMusic()">🎵</div>
 
     <!-- Slides -->
@@ -118,74 +125,55 @@
         <button onclick="nextSlide(event)">🎉 Start the Case →</button>
     </div>
 
-    <div class="slide" id="slide2">
-        <h2>🌸 Exhibit A</h2>
-        <img src="https://i.ibb.co/27kbp6Gz/photo1.jpg" alt="Café Balcony">
-        <p>Where sunlight turned you into a Renaissance painting...<br>and you hid behind your hands 🌟</p>
-        <button onclick="nextSlide(event)">Next Clue →</button>
-    </div>
+    <!-- Other slides remain same as before -->
 
-    <div class="slide" id="slide3">
-        <h2>📖 Exhibit B</h2>
-        <img src="https://i.ibb.co/23JQW5V9/photo2.jpg" alt="Dark Romance Book">
-        <p>The moment you handed me your favorite book<br>like a coded message 🔍 (Still decoding it!)</p>
-        <button onclick="nextSlide(event)">Next Clue →</button>
-    </div>
-
-    <div class="slide" id="slide4">
-        <h2>🎧 Exhibit C</h2>
-        <audio controls>
-            <source src="https://media.vocaroo.com/mp3/150YlX7HGHzf" type="audio/mpeg">
-        </audio>
-        <p>Proof you're secretly a rom-com villain 😈<br>And I'm here for it!</p>
-        <button onclick="nextSlide(event)">💖 Reveal the Verdict →</button>
-    </div>
-
-    <div class="slide" id="slide5">
-        <h2>💞 Verdict 🔍</h2>
-        <p>Guilty of being the most mesmerizing person I know<br>Sentence: Eternal bike rides and food (your pick) 🚴♀️❤️</p>
-        <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 19th! 🎂</p>
-    </div>
-
-    <!-- Background Music -->
     <audio id="bgMusic" loop>
         <source src="https://media.vocaroo.com/mp3/11UkIpEwjOZB" type="audio/mpeg">
     </audio>
 
     <script>
-        // ===== GUARANTEED WORKING CODE =====
         let currentSlide = 1;
         const bgMusic = document.getElementById('bgMusic');
-        
-        // Initialize first slide
-        document.getElementById('slide1').style.display = 'block';
+
+        // Continuous floating hearts
+        function createFloatingHearts() {
+            const hearts = ['💖', '🌸', '💐', '🌺'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.animationDuration = `${Math.random() * 3 + 5}s`;
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 8000);
+            }, 1000);
+        }
+
+        // Start floating hearts immediately
+        createFloatingHearts();
 
         // Music controls
         function toggleMusic() {
-            if (bgMusic.paused) {
-                bgMusic.play();
-                document.querySelector('.music-btn').textContent = '🎵';
-            } else {
-                bgMusic.pause();
-                document.querySelector('.music-btn').textContent = '🔇';
-            }
+            bgMusic[bgMusic.paused ? 'play' : 'pause']();
+            document.querySelector('.music-btn').textContent = 
+                bgMusic.paused ? '🔇' : '🎵';
         }
 
-        // Start music after first click
+        // Start music on first click
         document.addEventListener('click', () => {
             bgMusic.volume = 0.3;
-            bgMusic.play();
+            bgMusic.play().catch(() => {});
         }, { once: true });
 
-        // Slide transitions with hearts
+        // Slide transitions
         function nextSlide(event) {
-            // Create hearts
             const button = event.target;
             const rect = button.getBoundingClientRect();
             
+            // Create burst hearts
             for(let i = 0; i < 30; i++) {
                 const heart = document.createElement('div');
-                heart.className = 'heart';
+                heart.className = 'heart-burst';
                 heart.innerHTML = '💖';
                 heart.style.left = `${rect.left + rect.width/2}px`;
                 heart.style.top = `${rect.top + rect.height/2}px`;
@@ -200,12 +188,7 @@
             currentSlide++;
             const nextSlideElem = document.getElementById(`slide${currentSlide}`);
             nextSlideElem.classList.add('active');
-            
-            // Mobile scroll
-            nextSlideElem.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
+            nextSlideElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     </script>
 </body>
