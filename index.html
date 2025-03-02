@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Happy Birthday, Cups 🎀</title>
-    <!-- Add cute fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body { 
@@ -60,7 +59,6 @@
         .active { 
             display: block; 
         }
-        /* Floating hearts animation */
         .hearts {
             position: fixed;
             width: 100%;
@@ -82,6 +80,22 @@
             0% { transform: translateY(100vh) translateX(0); }
             100% { transform: translateY(-100vh) translateX(100px); }
         }
+        /* ==== NEW MUSIC BUTTON STYLES ==== */
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff6b8d;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -92,7 +106,10 @@
         <div class="heart" style="left: 70%; animation-delay: 2s">🎀</div>
     </div>
 
-    <!-- Your existing content with emojis -->
+    <!-- ==== NEW MUSIC CONTROL ==== -->
+    <div class="music-btn" onclick="toggleMusic()">🎵</div>
+
+    <!-- Slides -->
     <div class="slide active" id="slide1">
         <h1>🎀 Happy Birthday, Cups! 🎀</h1>
         <p>You've officially scammed me into being your biggest fan 🌸<br>Let's revisit the evidence...</p>
@@ -128,7 +145,32 @@
         <p style="font-size: 24px; margin-top: 30px;">🎂 Happiest 19th! 🎂</p>
     </div>
 
+    <!-- ==== NEW BACKGROUND MUSIC ==== -->
+    <audio id="bgMusic" loop>
+        <source src="https://media.vocaroo.com/mp3/11UkIpEwjOZB" type="audio/mpeg">
+    </audio>
+
     <script>
+        // ==== NEW MUSIC FUNCTIONALITY ====
+        const bgMusic = document.getElementById('bgMusic');
+        let musicStarted = false;
+
+        // Start music on first click
+        document.addEventListener('click', () => {
+            if(!musicStarted) {
+                bgMusic.volume = 0.3;
+                bgMusic.play();
+                musicStarted = true;
+            }
+        }, { once: true });
+
+        function toggleMusic() {
+            bgMusic[bgMusic.paused ? 'play' : 'pause']();
+            document.querySelector('.music-btn').textContent = 
+                bgMusic.paused ? '🔇' : '🎵';
+        }
+
+        // ==== EXISTING SLIDE FUNCTIONALITY ====
         let currentSlide = 1;
         function nextSlide() {
             document.querySelector('.active').classList.remove('active');
